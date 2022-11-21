@@ -1,19 +1,36 @@
 import { useState } from 'react';
 import { nanoid } from 'nanoid';
-import PropTypes from 'prop-types';
 import { ContactForm, ContactLabel, ContactInput, ContactButton } from './ContactForm.styled';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContacts } from 'redux/contactsSlice';
+import { getItems } from 'redux/selectors';
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
+
 
 const nameInputId = nanoid();
 const numberInputId = nanoid();
 
-export default function Form({ onSubmit }) {
+export const Form = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+  const dispatch = useDispatch();
+  const contacts = useSelector(getItems);
 
    const handleSubmit = event => {
-        event.preventDefault();
-        onSubmit({ name, number})
-        reset();
+     event.preventDefault();
+     const contact = {
+      id: nanoid(),
+      name,
+      number,
+
+    }
+
+      contacts.find(contact => contact.name === name)
+       ? toast.info(`${name} is already in contacts.`)
+       : dispatch(addContacts(contact));
+      reset();
     };
 
     const reset = () => {
@@ -50,14 +67,9 @@ export default function Form({ onSubmit }) {
   id={numberInputId}
                 />
   <ContactButton type="submit">Add contact</ContactButton>
-                
+  <ToastContainer position="top-center" autoClose={2000} />              
       </ContactForm>  
         )
-  
+ }
 
-
-}
-
-Form.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-};
+export default Form;

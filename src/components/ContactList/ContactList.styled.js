@@ -36,3 +36,8 @@ export const DelButton = styled.button`
     font-size: 18px;
     font-weight: 600;
 `
+
+export const Text = styled.p`
+    font-size: 40px;
+
+`
